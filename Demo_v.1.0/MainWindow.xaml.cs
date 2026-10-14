@@ -47,7 +47,7 @@ namespace Demo_v._1._0
                     user.FailedLoginAttempts = 0;
                     await context.SaveChangesAsync();
                     MessageBox.Show("Вы успешно авторизовались!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+                
 
                 if (user.role == "Admin")
                 {
@@ -58,6 +58,30 @@ namespace Demo_v._1._0
                 {
                     UserWindow userWindow = new UserWindow();
                     userWindow.Show();
+                }
+                
+                }
+                else 
+                {
+                    user.FailedLoginAttempts++;
+
+                    
+                    if (user.FailedLoginAttempts >= 3)
+                    {
+                        user.IsBlocked = true;
+                        MessageBox.Show("Вы были заблокированы!", "Внимание!", MessageBoxButton.OK, MessageBoxImage.Information);
+                        await context.SaveChangesAsync();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Неверный пароль. Осталось попыток: {3 - user.FailedLoginAttempts}");
+                    }
+                    await context.SaveChangesAsync();
+                    
+                    txtLogin.Clear();
+                    txtPassword.Clear(); 
+                
                 }
             }
         }
